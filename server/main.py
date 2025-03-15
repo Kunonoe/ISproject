@@ -12,6 +12,9 @@ from PIL import Image
 import joblib
 import gdown
 import re
+from tensorflow.keras.models import load_model  # ✅ เพิ่มบรรทัดนี้
+from tensorflow.keras.mixed_precision import Policy
+from tensorflow.keras.initializers import GlorotUniform, Zeros
 
 app = FastAPI()
 app.add_middleware(
@@ -24,9 +27,15 @@ app.add_middleware(
 
 # URLs สำหรับดาวน์โหลดโมเดล
 url_KNN = "https://drive.google.com/uc?export=download&id=1KKW9AfjhtDP6PLrydNSGMa5ae-_Htyjp"
-url_CNN = "https://drive.google.com/uc?export=download&id=1fuYaRCDSYNgAr8oCR3mzmwDmNUFcOq25"
+url_CNN = "https://drive.google.com/uc?export=download&id=1hy-oEu7Qd8x9INMRUAmN86QO5O-Od-DJ"
 url_SVM = "https://drive.google.com/uc?export=download&id=1n9m3hCCL4adrxPVsSSxB2BkTuu8VRIo2"
 
+# ✅ กำหนดค่า custom objects ก่อนโหลดโมเดล
+custom_objects = {
+    "DTypePolicy": Policy, 
+    "GlorotUniform": GlorotUniform, 
+    "Zeros": Zeros
+}
 
 # ตรวจสอบและโหลดโมเดล KNN
 knn_model_path = "knn_model.pkl"
@@ -41,12 +50,13 @@ if not os.path.exists(svm_model_path):
 svm_model = joblib.load(svm_model_path)
 
 # ตรวจสอบและโหลดโมเดล CNN
-DogVsCat_model_path = "DogVsCat_type.h5"
+DogVsCat_model_path = "DogVsCat.h5"
 if not os.path.exists(DogVsCat_model_path):
     gdown.download(url_CNN, DogVsCat_model_path, quiet=False)
-DogVscat_model = tf.keras.models.load_model(DogVsCat_model_path)
 
-class_labels = ["Dog", "Cat"]
+DogVsCat_model = load_model(DogVsCat_model_path, custom_objects=custom_objects, compile=False, safe_mode=False)
+
+class_labels = [0, 1]
 
 class DiabetesData(BaseModel):
     Age: int
@@ -59,7 +69,6 @@ class DiabetesData(BaseModel):
     Blood_glucose_level: int
     Diabetes: int
 
-
 class ImageData(BaseModel):
     image_base64: str
 
@@ -67,7 +76,7 @@ class ImageData(BaseModel):
 @app.post("/predict/KNN") 
 def predict_Disease_knn(data: DiabetesData):
     input_data = np.array([[data.Age, data.Sex, data.Hypertension, data.Heart_disease, data.Smoking_history,
-                            data.Bmi, data.HbA1c_level, data.Blood_glucose_level, data.Diabetes,]])
+                            data.Bmi, data.HbA1c_level, data.Blood_glucose_level, data.Diabetes]])
     prediction = knn_model.predict(input_data)[0]
     return {"result": "High Risk" if prediction == 1 else "Low Risk"}
 
@@ -75,11 +84,11 @@ def predict_Disease_knn(data: DiabetesData):
 @app.post("/predict/SVM") 
 def predict_Disease_svm(data: DiabetesData):
     input_data = np.array([[data.Age, data.Sex, data.Hypertension, data.Heart_disease, data.Smoking_history,
-                            data.Bmi, data.HbA1c_level, data.Blood_glucose_level, data.Diabetes,]])
+                            data.Bmi, data.HbA1c_level, data.Blood_glucose_level, data.Diabetes]])
     prediction = svm_model.predict(input_data)[0]
     return {"result": "High Risk" if prediction == 1 else "Low Risk"}
 
-# ทำนายดอกไม้
+# ทำนาย Dog vs Cat
 @app.post("/predict/DogVsCat")
 async def predict_DogVsCat(image_data: ImageData):
     try:
@@ -90,7 +99,7 @@ async def predict_DogVsCat(image_data: ImageData):
         if img.mode != "RGB":
             img = img.convert("RGB")
         
-        img = img.resize((224, 224))
+        img = img.resize((64, 64))  # ✅ แก้ไข resize ให้เป็น (64, 64)
         img_array = image.img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0)  
         img_array = img_array / 127.5 - 1  
