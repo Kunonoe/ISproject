@@ -27,7 +27,7 @@ app.add_middleware(
 
 # URLs สำหรับดาวน์โหลดโมเดล
 url_KNN = "https://drive.google.com/uc?export=download&id=1KKW9AfjhtDP6PLrydNSGMa5ae-_Htyjp"
-url_CNN = "https://drive.google.com/uc?export=download&id=1hy-oEu7Qd8x9INMRUAmN86QO5O-Od-DJ"
+url_CNN = "https://drive.google.com/uc?export=download&id=12UTHiAcOzUCmkgogWWM-C5TuQwCUr8Q"
 url_SVM = "https://drive.google.com/uc?export=download&id=1n9m3hCCL4adrxPVsSSxB2BkTuu8VRIo2"
 
 # ✅ กำหนดค่า custom objects ก่อนโหลดโมเดล
@@ -50,7 +50,7 @@ if not os.path.exists(svm_model_path):
 svm_model = joblib.load(svm_model_path)
 
 # ตรวจสอบและโหลดโมเดล CNN
-DogVsCat_model_path = "DogVsCat.h5"
+DogVsCat_model_path = "DogVsCatt.h5"
 if not os.path.exists(DogVsCat_model_path):
     gdown.download(url_CNN, DogVsCat_model_path, quiet=False)
 
