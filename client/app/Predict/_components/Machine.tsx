@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { predictKNNModel,IKNN } from '@/actions/Action';
+import { predictKNNModel, IKNN } from '@/actions/Action';
 import Swal from 'sweetalert2';
 
 interface FormData {
@@ -43,22 +43,22 @@ export default function DiseaseForm() {
 
     try {
       console.log("Raw Data:", formData);
-      const tyeSmoking : {
+      const tyeSmoking: {
         [key: string]: number
-    } = {
-        "No Info" : 0,
-        "current" : 1,
-        "ever" : 2,
-        "former" : 3,
-        "never" : 4
-    }
+      } = {
+        "No Info": 0,
+        "current": 1,
+        "ever": 2,
+        "former": 3,
+        "never": 4
+      }
 
-      const data : IKNN = {
+      const data: IKNN = {
         gender: formData.Gender === "Male" ? 1 : 0,  // แปลง Gender ให้เป็นตัวเลข
         age: Number(formData.Age),
         hypertension: Number(formData.Hypertension),
         heart_disease: Number(formData.Heart_disease),
-        smoking_history: Number( tyeSmoking[formData.Smoking_history]),
+        smoking_history: Number(tyeSmoking[formData.Smoking_history]),
         bmi: Number(formData.Bmi),
         HbA1c_level: Number(formData.HbA1c_level),
         blood_glucose_level: Number(formData.Blood_glucose_level),
@@ -120,7 +120,19 @@ export default function DiseaseForm() {
           <input type="number" name="Age" placeholder="Age" value={formData.Age} onChange={handleChange} className="border p-2 rounded" />
           <input type="number" name="Hypertension" placeholder="Hypertension (0/1)" value={formData.Hypertension} onChange={handleChange} className="border p-2 rounded" />
           <input type="number" name="Heart_disease" placeholder="Heart Disease (0/1)" value={formData.Heart_disease} onChange={handleChange} className="border p-2 rounded" />
-          <input type="text" name="Smoking_history" placeholder="Smoking History" value={formData.Smoking_history} onChange={handleChange} className="border p-2 rounded" />
+          <select
+            name="Smoking_history"
+            value={formData.Smoking_history}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="">Select Smoking History</option>
+            <option value="never">Never</option>
+            <option value="former">Former</option>
+            <option value="ever">Ever</option>
+            <option value="current">Current</option>
+            <option value="No Info">No Info</option>
+          </select>
           <input type="number" step="0.1" name="Bmi" placeholder="BMI" value={formData.Bmi} onChange={handleChange} className="border p-2 rounded" />
           <input type="number" step="0.1" name="HbA1c_level" placeholder="HbA1c Level" value={formData.HbA1c_level} onChange={handleChange} className="border p-2 rounded" />
           <input type="number" name="Blood_glucose_level" placeholder="Blood Glucose Level" value={formData.Blood_glucose_level} onChange={handleChange} className="border p-2 rounded" />
