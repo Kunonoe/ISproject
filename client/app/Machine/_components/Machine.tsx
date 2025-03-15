@@ -168,10 +168,10 @@ export default function Page1() {
           <h2 className="text-2xl font-semibold mb-6">🔹 11. ดาวน์โหลดไฟล์โมเดลจาก Colab ลงเครื่อง </h2>
           <Image src="/55.png" alt="" width={500} height={350} className="rounded-lg" />
           <p className="mt-6 text-lg text-left leading-relaxed">
-          oblib.dump(knn_model, "knn_model.pkl") → บันทึกโมเดล KNN ที่ฝึกเสร็จแล้ว ลงไฟล์ knn_model.pkl <br />
+          oblib.dump(knn_model, &quot;knn_model.pkl&quot;) → บันทึกโมเดล KNN ที่ฝึกเสร็จแล้ว ลงไฟล์ knn_model.pkl <br />
           ใช้ joblib ซึ่งเป็นไลบรารีสำหรับบันทึกโมเดล Machine Learning <br />
           from google.colab import files → นำเข้าโมดูล files เพื่อจัดการไฟล์ใน Google Colab <br />
-          files.download('knn_model.pkl') → ดาวน์โหลดไฟล์โมเดล knn_model.pkl ลงเครื่อง
+          files.download(&quot;knn_model.pkl&quot;) → ดาวน์โหลดไฟล์โมเดล knn_model.pkl ลงเครื่อง
           </p>
         </div>
 
@@ -179,7 +179,7 @@ export default function Page1() {
           <h2 className="text-2xl font-semibold mb-6">🔹 12. เทรนโมเดล SVM และ ประเมินผลลัพธ์ของโมเดล </h2>
           <Image src="/90.png" alt="" width={500} height={350} className="rounded-lg" />
           <p className="mt-6 text-lg text-left leading-relaxed">
-          SVC(kernel='rbf') → ใช้โมเดล Support Vector Machine (SVM) และเลือก Kernel แบบ RBF (Radial Basis Function) <br />
+          SVC(kernel=&quot;rbf&quot;) → ใช้โมเดล Support Vector Machine (SVM) และเลือก Kernel แบบ RBF (Radial Basis Function) <br />
           svm_model.fit(X_train, y_train) → ฝึกโมเดล SVM ด้วยชุดข้อมูล Train <br />
           svm_model.predict(X_test) → ใช้โมเดลทำนายค่า (y_pred_svm) จากชุดข้อมูล Test <br />
           accuracy_score(y_test, y_pred_svm) → คำนวณ ค่าความแม่นยำ (Accuracy) ของโมเดล SVM <br />
@@ -195,8 +195,8 @@ export default function Page1() {
           โมเดลมี ความแม่นยำสูงมาก <br />
           False Negative (FN = 176) ค่อนข้างสูง → หมายความว่าโมเดลพลาดการวินิจฉัยคนเป็นเบาหวาน 176 คน <br />
           False Positive (FP = 36) ต่ำมาก → แสดงว่าโมเดลแทบจะไม่ทำนายผิดว่าคนปกติเป็นเบาหวาน <br />
-          joblib.dump(svm_model, "svm_model.pkl") → บันทึกโมเดล SVM ลงไฟล์ .pkl <br />
-          files.download('svm_model.pkl') → ดาวน์โหลดโมเดลที่ฝึกแล้วลงเครื่อง
+          joblib.dump(svm_model, &quot;svm_model.pkl&quot;) → บันทึกโมเดล SVM ลงไฟล์ .pkl <br />
+          files.download(&quot;svm_model.pkl&quot;) → ดาวน์โหลดโมเดลที่ฝึกแล้วลงเครื่อง
           </p>
         </div>
       </div>
