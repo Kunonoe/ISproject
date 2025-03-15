@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Page2() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-12 bg-gray-50">
+    <div className="min-h-screen flex flex-col items-center justify-center p-12 ">
       <h1 className="text-5xl font-bold mb-8 text-blue-600">Neural Network for Image Classification Dog and Cat</h1>
       
       <p className="text-lg mb-8 text-center max-w-3xl leading-relaxed">

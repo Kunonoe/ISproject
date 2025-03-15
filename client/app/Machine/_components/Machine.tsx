@@ -200,13 +200,6 @@ export default function Page1() {
           </p>
         </div>
       </div>
-
-      {/* 🔹 ปุ่มกลับหน้าแรก */}
-      <Link href="/">
-        <button className="mt-10 px-8 py-3 bg-blue-500 text-white rounded-xl shadow-md text-lg hover:bg-blue-600 transition">
-          กลับหน้าแรก
-        </button>
-      </Link>
     </div>
   );
 }
