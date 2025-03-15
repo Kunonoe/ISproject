@@ -1,16 +1,15 @@
 "use server"
 import axios from 'axios';
 
-interface FormData {
-    Age: number;
-    Sex: number;  // 0 = Female, 1 = Male
-    Hypertension: number; 
-    Heart_disease: number;
-    Smoking_history: number;
-    Bmi: number; 
+export interface IKNN {
+    gender: number;
+    age: number;
+    hypertension: number; 
+    heart_disease: number;
+    smoking_history: number;
+    bmi: number; 
     HbA1c_level: number; 
-    Blood_glucose_level: number;
-    Diabetes: number; 
+    blood_glucose_level: number;
 }
 
 export const predictCNNModel = async (Base64: string) => {
@@ -31,7 +30,7 @@ export const predictCNNModel = async (Base64: string) => {
 };
 
 // ทำนายภาวะโรคเบาหวาน (KNN)
-export const predictKNNModel = async (form : any) => {
+export const predictKNNModel = async (form : IKNN) => {
     try{
 
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_END_POINT}/predict/KNN`,  form);
@@ -47,7 +46,7 @@ export const predictKNNModel = async (form : any) => {
 }
 
 // ทำนายภาวะโรคเบาหวาน (SVM)
-export const predictSVMModel = async (form : FormData) => {
+export const predictSVMModel = async (form : IKNN) => {
     try{
 
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_END_POINT}/predict/SVM`,  form);

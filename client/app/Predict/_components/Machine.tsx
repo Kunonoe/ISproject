@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { predictKNNModel } from '@/actions/Action';
+import { predictKNNModel,IKNN } from '@/actions/Action';
 import Swal from 'sweetalert2';
 
 interface FormData {
@@ -43,62 +43,80 @@ export default function DiseaseForm() {
 
     try {
       console.log("Raw Data:", formData);
+      const tyeSmoking : {
+        [key: string]: number
+    } = {
+        "No Info" : 0,
+        "current" : 1,
+        "ever" : 2,
+        "former" : 3,
+        "never" : 4
+    }
 
-      const data = {
-        Gender: formData.Gender === "Male" ? 1 : 0,  // แปลง Gender ให้เป็นตัวเลข
-        Age: Number(formData.Age),
-        Hypertension: Number(formData.Hypertension),
-        Heart_disease: Number(formData.Heart_disease),
-        Smoking_history: formData.Smoking_history === "Yes" ? 1 : 0,  // แปลงค่า
-        Bmi: Number(formData.Bmi),
+      const data : IKNN = {
+        gender: formData.Gender === "Male" ? 1 : 0,  // แปลง Gender ให้เป็นตัวเลข
+        age: Number(formData.Age),
+        hypertension: Number(formData.Hypertension),
+        heart_disease: Number(formData.Heart_disease),
+        smoking_history: Number( tyeSmoking[formData.Smoking_history]),
+        bmi: Number(formData.Bmi),
         HbA1c_level: Number(formData.HbA1c_level),
-        Blood_glucose_level: Number(formData.Blood_glucose_level),
+        blood_glucose_level: Number(formData.Blood_glucose_level),
       };
 
       console.log("Sending data to predictKNNModel:", data);
 
-    const knnResult = await predictKNNModel(data) as PredictionResponse;
+      const knnResult = await predictKNNModel(data) as PredictionResponse;
 
-    console.log("KNN Prediction Result:", knnResult);
+      console.log("KNN Prediction Result:", knnResult);
 
-    if (!knnResult || typeof knnResult !== "object" || !knnResult.result) {
-      console.error("Error: Invalid response from predictKNNModel:", knnResult);
+      if (!knnResult || typeof knnResult !== "object" || !knnResult.result) {
+        console.error("Error: Invalid response from predictKNNModel:", knnResult);
+        Swal.fire({
+          title: "Error",
+          text: "เกิดข้อผิดพลาดในการทำนาย โปรดลองใหม่",
+          icon: "error",
+        });
+        return;
+      }
+
+      console.log("Showing Alert with result:", knnResult.result);
+
+      await Swal.fire({
+        title: knnResult.result === "High Risk" ? "⚠️ High Risk of Diabetes" : "✅ Low Risk of Diabetes",
+        text: "การประเมินผลเสร็จสิ้น",
+        icon: knnResult.result === "High Risk" ? "warning" : "success",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+
+      setPrediction(knnResult);
+    } catch (error) {
+      console.error("Error submitting form:", error);
       Swal.fire({
         title: "Error",
-        text: "เกิดข้อผิดพลาดในการทำนาย โปรดลองใหม่",
+        text: "เกิดข้อผิดพลาด โปรดลองใหม่",
         icon: "error",
       });
-      return;
     }
-
-    console.log("Showing Alert with result:", knnResult.result);
-
-    await Swal.fire({
-      title: knnResult.result === "High Risk" ? "⚠️ High Risk of Diabetes" : "✅ Low Risk of Diabetes",
-      text: "การประเมินผลเสร็จสิ้น",
-      icon: knnResult.result === "High Risk" ? "warning" : "success",
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-    });
-
-    setPrediction(knnResult);
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    Swal.fire({
-      title: "Error",
-      text: "เกิดข้อผิดพลาด โปรดลองใหม่",
-      icon: "error",
-    });
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
       <h1 className="text-4xl font-bold mb-6">กรอกข้อมูลสำหรับพยากรณ์โรคเบาหวาน</h1>
       <form onSubmit={handleSubmit} className="w-full max-w-lg">
         <div className="grid grid-cols-1 gap-4">
-          <input type="text" name="Gender" placeholder="Gender" value={formData.Gender} onChange={handleChange} className="border p-2 rounded" />
+          <select
+            name="Gender"
+            value={formData.Gender}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
           <input type="number" name="Age" placeholder="Age" value={formData.Age} onChange={handleChange} className="border p-2 rounded" />
           <input type="number" name="Hypertension" placeholder="Hypertension (0/1)" value={formData.Hypertension} onChange={handleChange} className="border p-2 rounded" />
           <input type="number" name="Heart_disease" placeholder="Heart Disease (0/1)" value={formData.Heart_disease} onChange={handleChange} className="border p-2 rounded" />
