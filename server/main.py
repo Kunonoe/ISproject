@@ -26,16 +26,10 @@ app.add_middleware(
 )
 
 # URLs สำหรับดาวน์โหลดโมเดล
-url_KNN = "https://drive.google.com/uc?export=download&id=1KKW9AfjhtDP6PLrydNSGMa5ae-_Htyjp"
-url_CNN = "https://drive.google.com/uc?export=download&id=12UTHiAcOzUCmkgogWWM-C5TuQwCUr8Q"
-url_SVM = "https://drive.google.com/uc?export=download&id=1n9m3hCCL4adrxPVsSSxB2BkTuu8VRIo2"
+url_KNN = "https://drive.google.com/uc?export=download&id=1p1LENJdRXt4OfkL803WZHv7-khrumBsO"
+url_CNN = "https://drive.google.com/uc?export=download&id=1KhjmTRLFyxX0x6KYisgfBXQ4FnbIFkc0"
+url_SVM = "https://drive.google.com/uc?export=download&id=1ArIE2t1LC07J2lYkOE3KMKYCJ6YL7Loy"
 
-# ✅ กำหนดค่า custom objects ก่อนโหลดโมเดล
-custom_objects = {
-    "DTypePolicy": Policy, 
-    "GlorotUniform": GlorotUniform, 
-    "Zeros": Zeros
-}
 
 # ตรวจสอบและโหลดโมเดล KNN
 knn_model_path = "knn_model.pkl"
@@ -50,11 +44,11 @@ if not os.path.exists(svm_model_path):
 svm_model = joblib.load(svm_model_path)
 
 # ตรวจสอบและโหลดโมเดล CNN
-DogVsCat_model_path = "DogVsCatt.h5"
+DogVsCat_model_path = "DogVsCat.h5"
 if not os.path.exists(DogVsCat_model_path):
     gdown.download(url_CNN, DogVsCat_model_path, quiet=False)
 
-DogVsCat_model = load_model(DogVsCat_model_path, custom_objects=custom_objects, compile=False, safe_mode=False)
+DogVsCat_model = load_model(DogVsCat_model_path, compile=False, safe_mode=False)
 
 class_labels = [0, 1]
 
@@ -89,7 +83,7 @@ def predict_Disease_svm(data: DiabetesData):
     return {"result": "High Risk" if prediction == 1 else "Low Risk"}
 
 # ทำนาย Dog vs Cat
-@app.post("/predict/DogVsCatt")
+@app.post("/predict/DogVsCat")
 async def predict_DogVsCat(image_data: ImageData):
     try:
         base64_data = re.sub(r'^data:image/[^;]+;base64,', '', image_data.image_base64)
