@@ -11,7 +11,7 @@ export default function Page1() {
       <p className="text-lg mb-8 text-center max-w-3xl leading-relaxed">
         โค้ด Python นี้ใช้สร้างโมเดล Machine Learning เพื่อพยากรณ์โรคเบาหวาน
         โดยใช้ K-Nearest Neighbors (KNN) และ Support Vector Machine (SVM)
-        Dataset โดย https://www.kaggle.com/datasets/iammustafatz/diabetes-prediction-dataset/data
+        Dataset โดย <a href="https://www.kaggle.com/datasets/iammustafatz/diabetes-prediction-dataset/data" className="text-blue-500 underline">Kaggle Dataset</a>
       </p>
 
       {/* 🔹 รายการขั้นตอนการทำงาน */}
@@ -97,17 +97,18 @@ export default function Page1() {
           </p>
         </div>
 
-        <div className="bg-white p-10 rounded-2xl shadow-lg flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-6">🔹 6. การกระจายของข้อมูลแต่ละตัวแปร</h2>
-          <Image src="/8.png" alt="ตรวจสอบข้อมูล" width={500} height={350} className="rounded-lg" />
-          <Image src="/9.png" alt="ตรวจสอบข้อมูล" width={500} height={350} className="rounded-lg" />
-          <p className="mt-6 text-lg text-center leading-relaxed">
-          ใช้ df.hist() เพื่อ สร้าง Histogram ของแต่ละคอลัมน์ใน DataFrame
-          bins=20 → กำหนดให้แต่ละ Histogram แบ่งช่วงข้อมูลเป็น 20 ส่วน
-          figsize=(12, 8) → กำหนดขนาดของกราฟ
-          plt.suptitle("Feature Distributions") → ใส่ชื่อกราฟ
-          </p>
-        </div>
+        <div className="bg-white p-10 rounded-2xl shadow-lg flex flex-col items-center"> 
+        <h2 className="text-2xl font-semibold mb-6">🔹 6. การกระจายของข้อมูลแต่ละตัวแปร</h2>
+        <Image src="/8.png" alt="ตรวจสอบข้อมูล" width={500} height={350} className="rounded-lg" />
+        <Image src="/9.png" alt="ตรวจสอบข้อมูล" width={500} height={350} className="rounded-lg" />
+        <p className="mt-6 text-lg text-center leading-relaxed">
+          ใช้ <code>df.hist()</code> เพื่อ สร้าง Histogram ของแต่ละคอลัมน์ใน DataFrame <br />
+          <code>bins=20</code> → กำหนดให้แต่ละ Histogram แบ่งช่วงข้อมูลเป็น 20 ส่วน <br />
+          <code>figsize=(12, 8)</code> → กำหนดขนาดของกราฟ <br />
+          <code>plt.suptitle(&quot;Feature Distributions&quot;)</code> → ใส่ชื่อกราฟ
+        </p>
+      </div>
+
 
         <div className="bg-white p-10 rounded-2xl shadow-lg flex flex-col items-center">
           <h2 className="text-2xl font-semibold mb-6">🔹 7.  แปลงข้อมูล Categorical เป็นตัวเลข</h2>
