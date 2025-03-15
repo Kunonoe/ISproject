@@ -42,43 +42,56 @@ export default function DiseaseForm() {
     console.log("Form Data Submitted:", formData);
 
     try {
+      console.log("Raw Data:", formData);
+
       const data = {
-        Gender: Number(formData.Gender),
+        Gender: formData.Gender === "Male" ? 1 : 0,  // แปลง Gender ให้เป็นตัวเลข
         Age: Number(formData.Age),
         Hypertension: Number(formData.Hypertension),
         Heart_disease: Number(formData.Heart_disease),
-        Smoking_history: Number(formData.Smoking_history),
+        Smoking_history: formData.Smoking_history === "Yes" ? 1 : 0,  // แปลงค่า
         Bmi: Number(formData.Bmi),
         HbA1c_level: Number(formData.HbA1c_level),
         Blood_glucose_level: Number(formData.Blood_glucose_level),
       };
 
       console.log("Sending data to predictKNNModel:", data);
-      const knnResult = await predictKNNModel(data) as PredictionResponse;
-      console.log("KNN Prediction Result:", knnResult);
 
-      if (!knnResult || typeof knnResult !== "object" || !knnResult.result) {
-        console.error("Error: Invalid response from predictKNNModel:", knnResult);
-        return;
-      }
+    const knnResult = await predictKNNModel(data) as PredictionResponse;
 
-      await Swal.fire({
-        title: knnResult.result === "High Risk" ? "⚠️ High Risk of Diabetes" : "✅ Low Risk of Diabetes",
-        text: "กำลังประมวลผล...",
-        icon: knnResult.result === "High Risk" ? "warning" : "success",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        willClose: () => {
-          console.log("Alert closed automatically");
-        },
+    console.log("KNN Prediction Result:", knnResult);
+
+    if (!knnResult || typeof knnResult !== "object" || !knnResult.result) {
+      console.error("Error: Invalid response from predictKNNModel:", knnResult);
+      Swal.fire({
+        title: "Error",
+        text: "เกิดข้อผิดพลาดในการทำนาย โปรดลองใหม่",
+        icon: "error",
       });
-
-      setPrediction(knnResult);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+      return;
     }
-  };
+
+    console.log("Showing Alert with result:", knnResult.result);
+
+    await Swal.fire({
+      title: knnResult.result === "High Risk" ? "⚠️ High Risk of Diabetes" : "✅ Low Risk of Diabetes",
+      text: "การประเมินผลเสร็จสิ้น",
+      icon: knnResult.result === "High Risk" ? "warning" : "success",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+
+    setPrediction(knnResult);
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    Swal.fire({
+      title: "Error",
+      text: "เกิดข้อผิดพลาด โปรดลองใหม่",
+      icon: "error",
+    });
+  }
+};
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
