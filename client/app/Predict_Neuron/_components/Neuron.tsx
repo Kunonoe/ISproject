@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 
 export default function ImageUpload() {
   const [image, setImage] = useState<string | null>(null);
-  const [prediction, setPrediction] = useState<string | null>(null);
+  // const [prediction, setPrediction] = useState<string | null>(null);
 
   // 📌 ฟังก์ชันสำหรับปรับขนาดภาพเป็น 800x800
   const resizeImage = (file: File, callback: (resizedImage: string) => void) => {
@@ -44,7 +44,7 @@ export default function ImageUpload() {
 
     // 📌 จำลองการพยากรณ์ (สุ่มผลลัพธ์ หมา หรือ แมว)
     const randomPrediction = Math.random() < 0.5 ? "Dog" : "Cat";
-    setPrediction(randomPrediction);
+    // setPrediction(randomPrediction);
 
     // 📌 แสดงผลลัพธ์ด้วย SweetAlert2
     await Swal.fire({
