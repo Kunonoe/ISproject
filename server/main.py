@@ -89,7 +89,7 @@ def predict_Disease_svm(data: DiabetesData):
     return {"result": "High Risk" if prediction == 1 else "Low Risk"}
 
 # ทำนาย Dog vs Cat
-@app.post("/predict/DogVsCat")
+@app.post("/predict/DogVsCatt")
 async def predict_DogVsCat(image_data: ImageData):
     try:
         base64_data = re.sub(r'^data:image/[^;]+;base64,', '', image_data.image_base64)
