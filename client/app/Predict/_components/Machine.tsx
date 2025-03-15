@@ -1,5 +1,4 @@
 'use client';
-import Link from 'next/link';
 import { useState } from 'react';
 import { predictKNNModel } from '@/actions/Action';
 import Swal from 'sweetalert2';
@@ -15,6 +14,10 @@ interface FormData {
   Blood_glucose_level: string;
 }
 
+interface PredictionResponse {
+  result: 'High Risk' | 'Low Risk';
+}
+
 export default function DiseaseForm() {
   const [formData, setFormData] = useState<FormData>({
     Gender: "",
@@ -27,7 +30,7 @@ export default function DiseaseForm() {
     Blood_glucose_level: "",
   });
 
-  const [prediction, setPrediction] = useState<string | null>(null);
+  const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -51,24 +54,18 @@ export default function DiseaseForm() {
       };
 
       console.log("Sending data to predictKNNModel:", data);
-      const knnResult: any = await predictKNNModel(data);
+      const knnResult = await predictKNNModel(data) as PredictionResponse;
       console.log("KNN Prediction Result:", knnResult);
 
-      if (!knnResult || typeof knnResult !== "object") {
-        console.error("Error: predictKNNModel returned undefined or invalid data:", knnResult);
-        return;
-      }
-
-      const knnPrediction = knnResult?.result;
-      if (!knnPrediction) {
-        console.error("Error: result property not found in knnResult", knnResult);
+      if (!knnResult || typeof knnResult !== "object" || !knnResult.result) {
+        console.error("Error: Invalid response from predictKNNModel:", knnResult);
         return;
       }
 
       await Swal.fire({
-        title: knnPrediction === "High Risk" ? "⚠️ High Risk of Diabetes" : "✅ Low Risk of Diabetes",
+        title: knnResult.result === "High Risk" ? "⚠️ High Risk of Diabetes" : "✅ Low Risk of Diabetes",
         text: "กำลังประมวลผล...",
-        icon: knnPrediction === "High Risk" ? "warning" : "success",
+        icon: knnResult.result === "High Risk" ? "warning" : "success",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
@@ -77,7 +74,7 @@ export default function DiseaseForm() {
         },
       });
 
-      setPrediction(knnPrediction);
+      setPrediction(knnResult);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -105,8 +102,8 @@ export default function DiseaseForm() {
       {prediction && (
         <div className="mt-6 text-center text-lg font-semibold">
           <p>Prediction Result:</p>
-          <p className={`text-xl font-bold ${prediction === 'High Risk' ? 'text-red-600' : 'text-green-600'}`}>
-            {prediction === 'High Risk' ? '⚠️ High Risk of Diabetes' : '✅ Low Risk of Diabetes'}
+          <p className={`text-xl font-bold ${prediction.result === 'High Risk' ? 'text-red-600' : 'text-green-600'}`}>
+            {prediction.result === 'High Risk' ? '⚠️ High Risk of Diabetes' : '✅ Low Risk of Diabetes'}
           </p>
         </div>
       )}
